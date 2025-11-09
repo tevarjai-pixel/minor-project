@@ -557,4 +557,98 @@ body {
     font-weight: bold;
     color: var(--primary-blue);
     font-size: 0.9em;
+
+}
+/* Recent URL Searches */
+.search-history-section {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.search-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-history-header h3 {
+    color: #2d3748;
+    margin: 0;
+}
+
+.clear-history-btn {
+    background: #e53e3e;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.clear-history-btn:hover {
+    background: #c53030;
+}
+
+.search-history-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.search-history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid #e9ecef;
+    background: white;
+    transition: background 0.2s ease;
+}
+
+.search-history-item:hover {
+    background: #f7fafc;
+}
+
+.search-history-item:last-child {
+    border-bottom: none;
+}
+
+.search-url {
+    flex: 1;
+    color: #4a5568;
+    font-family: monospace;
+    font-size: 0.9em;
+    word-break: break-all;
+}
+
+.search-status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.status-safe {
+    background: #c6f6d5;
+    color: #22543d;
+}
+
+.status-danger {
+    background: #fed7d7;
+    color: #742a2a;
+}
+
+.search-date {
+    color: #718096;
+    font-size: 0.8em;
+    margin-left: 10px;
 }
