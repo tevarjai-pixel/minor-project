@@ -186,3 +186,164 @@ function clearSearchHistory() {
         updateSearchHistory();
     }
 }
+// Bulk Analysis Functions
+let bulkAnalysis = null;
+let analysisResults = [];
+
+async function runBulkAnalysis() {
+    if (bulkAnalysis) {
+        alert('Analysis already running!');
+        return;
+    }
+
+    const datasetSize = parseInt(document.getElementById('datasetSize').value);
+    const batchSize = parseInt(document.getElementById('batchSize').value);
+
+    // Generate synthetic dataset
+    document.getElementById('bulkProgressText').textContent = 'Generating dataset...';
+    const dataset = window.mlAnalyzer.generateBulkData(datasetSize);
+
+    bulkAnalysis = {
+        dataset: dataset,
+        currentIndex: 0,
+        batchSize: batchSize,
+        results: [],
+        startTime: Date.now()
+    };
+
+    // Reset UI
+    document.getElementById('resultsGridLarge').innerHTML = '';
+    document.getElementById('bulkProgressFill').style.width = '0%';
+    document.getElementById('processedCount').textContent = '0';
+    document.getElementById('maliciousCount').textContent = '0';
+    document.getElementById('safeCount').textContent = '0';
+    document.getElementById('accuracy').textContent = '0%';
+    document.getElementById('reportSection').style.display = 'none';
+
+    // Start processing
+    await processBulkBatch();
+}
+
+async function processBulkBatch() {
+    if (!bulkAnalysis) return;
+
+    const { dataset, currentIndex, batchSize } = bulkAnalysis;
+    
+    if (currentIndex >= dataset.length) {
+        // Analysis complete
+        analysisResults = bulkAnalysis.results;
+        document.getElementById('bulkProgressText').textContent = 
+            `Analysis complete! Processed ${dataset.length} URLs`;
+        
+        const elapsed = ((Date.now() - bulkAnalysis.startTime) / 1000).toFixed(2);
+        console.log(`Bulk analysis completed in ${elapsed} seconds`);
+        
+        bulkAnalysis = null;
+        return;
+    }
+
+    const batch = dataset.slice(currentIndex, currentIndex + batchSize);
+    
+    // Update progress
+    const progress = ((currentIndex + batch.length) / dataset.length * 100).toFixed(1);
+    document.getElementById('bulkProgressFill').style.width = `${progress}%`;
+    document.getElementById('bulkProgressText').textContent = 
+        `Processing... ${currentIndex + batch.length}/${dataset.length} (${progress}%)`;
+
+    // Process batch
+    const batchResults = await window.mlAnalyzer.analyzeBulk(batch);
+    bulkAnalysis.results.push(...batchResults);
+    bulkAnalysis.currentIndex += batch.length;
+
+    // Update real-time stats
+    updateRealTimeStats(bulkAnalysis.results);
+
+    // Display sample results
+    displaySampleResults(batchResults);
+
+    // Continue with next batch
+    setTimeout(() => processBulkBatch(), 10);
+}
+
+function updateRealTimeStats(results) {
+    const processed = results.length;
+    const malicious = results.filter(r => r.actual === 'malicious').length;
+    const safe = results.filter(r => r.actual === 'safe').length;
+    
+    const correct = results.filter(r => r.correct).length;
+    const accuracy = processed > 0 ? ((correct / processed) * 100).toFixed(1) : 0;
+
+    document.getElementById('processedCount').textContent = processed.toLocaleString();
+    document.getElementById('maliciousCount').textContent = malicious.toLocaleString();
+    document.getElementById('safeCount').textContent = safe.toLocaleString();
+    document.getElementById('accuracy').textContent = `${accuracy}%`;
+}
+
+function displaySampleResults(results) {
+    const container = document.getElementById('resultsGridLarge');
+    
+    // Show only last 20 results to prevent DOM overload
+    const displayResults = results.slice(-20);
+    
+    container.innerHTML = displayResults.map(result => `
+        <div class="result-card ${result.actual}">
+            <div class="result-url" title="${result.url}">${result.url}</div>
+            <div class="result-metrics">
+                <span class="risk-score risk-${getRiskLevel(result.riskScore)}">
+                    Risk: ${result.riskScore}%
+                </span>
+                <span class="result-type ${result.correct ? 'correct' : 'incorrect'}">
+                    ${result.correct ? '✓' : '✗'} ${result.actual}
+                </span>
+            </div>
+        </div>
+    `).join('');
+}
+
+function getRiskLevel(score) {
+    if (score >= 70) return 'high';
+    if (score >= 40) return 'medium';
+    return 'low';
+}
+
+function generateReport() {
+    if (analysisResults.length === 0) {
+        alert('Please run analysis first!');
+        return;
+    }
+
+    const report = window.mlAnalyzer.generateReport(analysisResults);
+    
+    // Display metrics
+    document.getElementById('reportMetrics').innerHTML = `
+        <div class="metric-card">
+            <span class="metric-value">${report.summary.total.toLocaleString()}</span>
+            <span class="metric-label">Total URLs</span>
+        </div>
+        <div class="metric-card">
+            <span class="metric-value">${report.summary.accuracy}</span>
+            <span class="metric-label">Accuracy</span>
+        </div>
+        <div class="metric-card">
+            <span class="metric-value">${report.summary.precision}</span>
+            <span class="metric-label">Precision</span>
+        </div>
+        <div class="metric-card">
+            <span class="metric-value">${report.summary.recall}</span>
+            <span class="metric-label">Recall</span>
+        </div>
+    `;
+
+    // Display confusion matrix
+    document.getElementById('confusionMatrix').innerHTML = `
+        <h5>Confusion Matrix</h5>
+        <div class="confusion-matrix">
+            <div class="matrix-cell matrix-tp">TP: ${report.confusionMatrix.truePositives}</div>
+            <div class="matrix-cell matrix-fp">FP: ${report.confusionMatrix.falsePositives}</div>
+            <div class="matrix-cell matrix-fn">FN: ${report.confusionMatrix.falseNegatives}</div>
+            <div class="matrix-cell matrix-tn">TN: ${report.confusionMatrix.trueNegatives}</div>
+        </div>
+    `;
+
+    document.getElementById('reportSection').style.display = 'block';
+}
