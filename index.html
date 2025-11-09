@@ -564,6 +564,7 @@ function redirectToLearning() {
             setTimeout(() => {
                 const analysis = analyzeURL(url);
                 displayResult(analysis, resultArea);
+                saveToSearchHistory(url, analysis);
             }, 2000);
         }
         <!-- Recent URL Searches Section -->
@@ -836,5 +837,6 @@ function redirectToLearning() {
     </script>
 </body>
 </html>
+
 
 
