@@ -100,6 +100,10 @@ function filterAlerts() {
         renderAlerts(filtered);
     }
 }
+// Redirect to URL Analysis Dashboard
+function redirectToAnalysis() {
+    window.location.href = 'url-analysis-dashboard.html';
+}
 
 // Function to display the required overall accuracy number
 function displayAccuracyMeter(accuracy) {
@@ -305,3 +309,4 @@ function getRiskLevel(score) {
     if (score >= 40) return 'medium';
     return 'low';
 }
+
