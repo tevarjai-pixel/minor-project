@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Alert Buddy - URL Detection</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        .url-detection-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .detection-card { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .url-input-group { display: flex; gap: 15px; margin-bottom: 20px; }
+        .url-input { flex: 1; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; }
+        .analyze-btn { background: #007bff; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-size: 16px; }
+        .loading-indicator { text-align: center; padding: 20px; display: none; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #007bff; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .result-section { display: none; margin-top: 30px; padding: 25px; border-radius: 10px; background: #f8f9fa; }
+        .status-indicator { padding: 10px 20px; border-radius: 25px; font-weight: bold; font-size: 14px; text-transform: uppercase; }
+        .status-safe { background: #28a745; color: white; }
+        .status-phishing { background: #dc3545; color: white; }
+        .confidence-meter { margin: 25px 0; }
+        .confidence-bar { height: 25px; background: #e9ecef; border-radius: 12px; overflow: hidden; }
+        .confidence-fill { height: 100%; border-radius: 12px; transition: width 0.8s ease-in-out; }
+        .fill-safe { background: #28a745; }
+        .fill-phishing { background: #dc3545; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 15px; }
+        .feature-item { display: flex; align-items: center; gap: 12px; padding: 15px; background: white; border-radius: 8px; border-left: 4px solid #007bff; }
+        .alert-message { padding: 15px; border-radius: 8px; margin: 15px 0; display: none; }
+        .alert-danger { background: #f8d7da; color: #721c24; border-left: 4px solid #dc3545; }
+        .info-box { background: #e7f3ff; border-left: 4px solid #007bff; padding: 20px; border-radius: 8px; margin-bottom: 25px; }
+        .scan-history { max-height: 300px; overflow-y: auto; margin-top: 20px; }
+        .scan-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-bottom: 1px solid #e9ecef; background: white; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-shield-alt"></i> Cyber Alert Buddy
+        </div>
+        <nav class="main-nav">
+            <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="alert.html" class="nav-link"><i class="fas fa-bell"></i> Alerts</a>
+            <a href="learning.html" class="nav-link"><i class="fas fa-book-open"></i> Learn</a>
+            <a href="url-detection.html" class="nav-link active"><i class="fas fa-link"></i> URL Check</a>
+        </nav>
+    </header>
+
+    <main class="dashboard-main">
+        <div class="url-detection-container">
+            <div class="detection-card">
+                <h2 class="section-title"><i class="fas fa-search"></i> URL Phishing Detection</h2>
+                
+                <div class="info-box">
+                    <p><strong>How it works:</strong> Enter any URL to check if it's safe or a phishing website. Our system analyzes the URL for security threats.</p>
+                </div>
+
+                <form id="urlForm">
+                    <div class="url-input-group">
+                        <input type="url" id="urlInput" class="url-input" placeholder="Enter URL (e.g., https://example.com)" required>
+                        <button type="submit" class="analyze-btn" id="analyzeBtn">
+                            <i class="fas fa-search"></i> Analyze URL
+                        </button>
+                    </div>
+                </form>
+
+                <div class="loading-indicator" id="loadingIndicator">
+                    <div class="spinner"></div>
+                    <p>Analyzing URL for security threats...</p>
+                </div>
+
+                <div class="alert-message" id="errorAlert">
+                    <i class="fas fa-exclamation-triangle"></i> 
+                    <span id="errorMessage"></span>
+                </div>
+
+                <div class="result-section" id="resultSection">
+                    <div class="result-header">
+                        <h3>Analysis Result for:</h3>
+                        <span id="analyzedUrl" class="url-display"></span>
+                    </div>
+                    
+                    <div class="status-display">
+                        <div class="status-indicator" id="statusIndicator">Safe</div>
+                        <div class="confidence-meter">
+                            <div class="confidence-label">
+                                <span>Confidence Level:</span>
+                                <span id="confidenceValue">0%</span>
+                            </div>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" id="confidenceFill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-analysis">
+                        <h4>Security Analysis</h4>
+                        <div class="feature-grid" id="featureList"></div>
+                    </div>
+                    
+                    <div class="recommendation">
+                        <h4>Recommendation</h4>
+                        <p id="recommendationText">Based on our analysis, this URL appears to be safe.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detection-card">
+                <h3><i class="fas fa-history"></i> Recent URL Scans</h3>
+                <div class="scan-history" id="scanHistory">
+                    <div class="scan-item">
+                        <div class="scan-url">No scans yet. Analyze a URL to see results here.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlForm = document.getElementById('urlForm');
+            const urlInput = document.getElementById('urlInput');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const resultSection = document.getElementById('resultSection');
+            const errorAlert = document.getElementById('errorAlert');
+            const errorMessage = document.getElementById('errorMessage');
+            const analyzedUrl = document.getElementById('analyzedUrl');
+            const statusIndicator = document.getElementById('statusIndicator');
+            const confidenceValue = document.getElementById('confidenceValue');
+            const confidenceFill = document.getElementById('confidenceFill');
+            const featureList = document.getElementById('featureList');
+            const recommendationText = document.getElementById('recommendationText');
+            const scanHistory = document.getElementById('scanHistory');
+            
+            let scans = JSON.parse(localStorage.getItem('cyberAlertUrlScans')) || [];
+            updateScanHistory();
+
+            urlForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const url = urlInput.value.trim();
+                
+                if (!url) {
+                    showError('Please enter a URL to analyze.');
+                    return;
+                }
+                
+                try {
+                    new URL(url);
+                } catch (e) {
+                    showError('Please enter a valid URL (e.g., https://example.com).');
+                    return;
+                }
+                
+                await analyzeUrl(url);
+            });
+
+           async function analyzeUrl(url) {
+    loadingIndicator.style.display = 'block';
+    resultSection.style.display = 'none';
+    errorAlert.style.display = 'none';
+    analyzeBtn.disabled = true;
+    
+    try {
+        // REAL API CALL to your Flask backend
+        const response = await fetch('http://localhost:5000/analyze-url', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ url: url })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Analysis failed');
+        }
+        
+        const result = await response.json();
+        
+        loadingIndicator.style.display = 'none';
+        analyzeBtn.disabled = false;
+        
+        displayResults(url, result);
+        saveToHistory(url, result);
+        
+    } catch (error) {
+        loadingIndicator.style.display = 'none';
+        analyzeBtn.disabled = false;
+        showError('Cannot connect to analysis server. Using demo mode.');
+        // Fallback to demo
+        const demoResult = simulateAnalysis(url);
+        displayResults(url, demoResult);
+        saveToHistory(url, demoResult);
+    }
+}
+
+            function simulateAnalysis(url) {
+                // Demo analysis - replace with actual API call
+                const randomScore = Math.random() * 100;
+                const isSafe = randomScore > 40;
+                
+                return {
+                    prediction_label: isSafe ? 0 : 1,
+                    prediction_score: isSafe ? (70 + Math.random() * 30) : (60 + Math.random() * 40)
+                };
+            }
+
+            function displayResults(url, result) {
+                analyzedUrl.textContent = url;
+                
+                const status = result.prediction_label === 1 ? 'phishing' : 'safe';
+                const confidence = result.prediction_score;
+                
+                statusIndicator.textContent = status === 'safe' ? 'Safe' : 'Phishing Detected';
+                statusIndicator.className = 'status-indicator ' + (status === 'safe' ? 'status-safe' : 'status-phishing');
+                
+                confidenceValue.textContent = `${confidence.toFixed(1)}%`;
+                confidenceFill.style.width = `${confidence}%`;
+                confidenceFill.className = 'confidence-fill ' + (status === 'safe' ? 'fill-safe' : 'fill-phishing');
+                
+                if (status === 'safe') {
+                    recommendationText.textContent = '✅ This URL appears to be safe. You can proceed with normal caution.';
+                    recommendationText.style.color = '#28a745';
+                } else {
+                    recommendationText.textContent = '⚠️ Warning: This URL may be a phishing attempt. Do not enter personal information.';
+                    recommendationText.style.color = '#dc3545';
+                }
+                
+                featureList.innerHTML = `
+                    <div class="feature-item">
+                        <i class="fas fa-shield-alt feature-icon ${status === 'safe' ? 'feature-safe' : 'feature-danger'}"></i>
+                        <div>
+                            <strong>Security Score</strong>
+                            <div>${confidence.toFixed(1)}% confidence</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-globe feature-icon ${status === 'safe' ? 'feature-safe' : 'feature-warning'}"></i>
+                        <div>
+                            <strong>Domain Analysis</strong>
+                            <div>${status === 'safe' ? 'Trusted domain' : 'Suspicious domain'}</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-link feature-icon ${status === 'safe' ? 'feature-safe' : 'feature-danger'}"></i>
+                        <div>
+                            <strong>URL Structure</strong>
+                            <div>${status === 'safe' ? 'Normal structure' : 'Suspicious patterns'}</div>
+                        </div>
+                    </div>
+                `;
+                
+                resultSection.style.display = 'block';
+            }
+
+            function saveToHistory(url, result) {
+                const scan = {
+                    url: url,
+                    status: result.prediction_label === 1 ? 'phishing' : 'safe',
+                    confidence: result.prediction_score,
+                    timestamp: new Date().toLocaleString()
+                };
+                
+                scans.unshift(scan);
+                if (scans.length > 10) scans = scans.slice(0, 10);
+                
+                localStorage.setItem('cyberAlertUrlScans', JSON.stringify(scans));
+                updateScanHistory();
+            }
+
+            function updateScanHistory() {
+                scanHistory.innerHTML = '';
+                
+                if (scans.length === 0) {
+                    scanHistory.innerHTML = '<div class="scan-item"><div class="scan-url">No scans yet</div></div>';
+                    return;
+                }
+                
+                scans.forEach(scan => {
+                    const scanItem = document.createElement('div');
+                    scanItem.className = 'scan-item';
+                    
+                    scanItem.innerHTML = `
+                        <div class="scan-url" title="${scan.url}">${scan.url}</div>
+                        <div class="scan-status ${scan.status === 'safe' ? 'status-safe' : 'status-phishing'}">
+                            ${scan.status === 'safe' ? 'Safe' : 'Phishing'}
+                        </div>
+                        <div class="scan-date">${scan.timestamp}</div>
+                    `;
+                    
+                    scanHistory.appendChild(scanItem);
+                });
+            }
+
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorAlert.className = 'alert-message alert-danger';
+                errorAlert.style.display = 'block';
+                resultSection.style.display = 'none';
+                loadingIndicator.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

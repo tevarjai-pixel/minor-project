@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course: Two-Factor Authentication</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body style="font-family: 'Poppins', sans-serif; background-color: #f4f7f9; color: #333; margin: 0; padding: 0; line-height: 1.6;">
+
+    <header style="background-color: #fff; padding: 15px 50px; border-bottom: 1px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center;">
+        <a href="learning.html" style="text-decoration: none; color: #1e3c72; font-weight: 600; padding: 8px 15px; border-radius: 5px; transition: background-color 0.2s;">⬅️ Revert to Courses</a>
+        <div class="difficulty-tag" style="padding: 5px 12px; border-radius: 4px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: #fff; background-color: #28a745;">Beginner</div>
+    </header>
+
+    <main style="max-width: 800px; margin: 30px auto; padding: 0 20px;">
+        
+        <section style="background-color: #fff; padding: 30px; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);">
+            <h1 style="color: #1e3c72; font-size: 2rem; margin-top: 0;">Two-Factor Authentication (2FA): The Second Lock</h1>
+            <p style="font-size: 1.1rem; color: #555; border-left: 4px solid #28a745; padding-left: 15px;">Add an essential second layer of security to your most important accounts. **Duration: 6 minutes.**</p>
+            
+            <div style="text-align: center; margin: 25px 0 20px 0;">
+                <img src="https://assets-vision.platform.openai.com/v1/files/file-JbQfS6H98c0Z4L2Y7F8T2N1K?se=2024-06-25T12%3A01%3A37Z&sp=r&sv=2023-11-07&sr=b&sig=P0Z3f1h9w0t6e4k8X5r1S7m2V5j0x7p4L6Q1Y3t9R0A%3D" 
+                     alt="Two-Factor Authentication concept: A smartphone receiving a security code next to a secure login screen." 
+                     style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);">
+                <span style="display: block; font-size: 0.9rem; color: #6c757d; margin-top: 10px;">2FA requires two separate proofs of identity.</span>
+            </div>
+        </section>
+
+        <section style="background-color: #fff; padding: 25px; border-radius: 8px; margin-bottom: 20px;">
+            <h2 style="color: #1e3c72; font-size: 1.5rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">What is 2FA and Why It's Crucial (1 min)</h2>
+            <div class="module-body">
+                <p>Two-Factor Authentication (2FA) is a security measure that requires **two different forms of verification** to log into an account. It protects you even if your password is stolen in a data breach.</p>
+                <p><strong>Analogy:</strong> If your password is the key to your safe, 2FA is the **combination lock** that a thief would also need to know. Since a thief stole the key (password), they still can't open the safe without your combination (the second factor).</p>
+                <p>2FA requires authentication from two of these categories:</p>
+                <ul style="padding-left: 20px;">
+                    <li style="margin-bottom: 5px;">**Something you KNOW** (Your password)</li>
+                    <li style="margin-bottom: 5px;">**Something you HAVE** (Your phone or a physical security key)</li>
+                    <li style="margin-bottom: 5px;">**Something you ARE** (Your fingerprint or face ID)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section style="background-color: #fff; padding: 25px; border-radius: 8px; margin-bottom: 20px;">
+            <h2 style="color: #1e3c72; font-size: 1.5rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">Module 1: Ranking the Types of 2FA (3 min)</h2>
+            <div class="module-body">
+                <p>Not all 2FA methods are equally secure. Here is the ranking from least secure to most secure:</p>
+                <ol style="padding-left: 20px;">
+                    <li style="margin-bottom: 15px;">
+                        <strong>Email or Security Questions (Lowest):</strong> These are often weak because hackers can sometimes guess them or access your email through other breaches.
+                    </li>
+                    <li style="margin-bottom: 15px;">
+                        <strong>SMS Text Message (Better, but Vulnerable):</strong> This is the most common method. The code is sent to your phone number. However, hackers can perform a "SIM swap attack" to redirect your number to their device, stealing the code.
+                    </li>
+                    <li style="margin-bottom: 15px;">
+                        <strong>Authenticator Apps (Recommended):</strong> Apps like **Google Authenticator** or **Authy** generate a unique, time-sensitive code on your device. These codes are not sent over the network, making them immune to SIM swaps. **This is the standard recommendation.**
+                    </li>
+                    <li style="margin-bottom: 15px;">
+                        <strong>Physical Security Keys (Best):</strong> A USB key (like YubiKey) is a piece of hardware you physically plug in or tap to approve a login. This is the most secure method, as the hacker must physically possess the key.
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <section style="background-color: #fff; padding: 25px; border-radius: 8px; margin-bottom: 20px;">
+            <h2 style="color: #1e3c72; font-size: 1.5rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">Module 2: How to Enable 2FA Today (2 min)</h2>
+            <div class="module-body">
+                <p>Enabling 2FA is usually straightforward:</p>
+                <ul style="padding-left: 20px;">
+                    <li style="margin-bottom: 10px;">**Priority Accounts:** Start with your Email (the master key to everything) and your Bank/Financial accounts.</li>
+                    <li style="margin-bottom: 10px;">**Steps:** Go to the account's **"Security Settings"** or **"Privacy Settings."** Look for options like "Two-Step Verification" or "Multi-Factor Authentication (MFA)."</li>
+                    <li style="margin-bottom: 10px;">**Backup Codes:** When setting up 2FA, the service will provide **backup recovery codes**. Print these codes and store them in a safe place (like a locked drawer). These are vital if you lose your phone!</li>
+                </ul>
+                <p style="font-style: italic; color: #007bff;"><strong>Action Item:</strong> Go to your primary email provider (Gmail, Outlook) right now and ensure 2FA is set up using an Authenticator App.</p>
+            </div>
+        </section>
+
+       <section style="text-align: center; padding: 30px 0;">
+    <a href="learning.html" style="background-color: #28a745; color: #fff; text-decoration: none; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; font-weight: 700; width: 100%; max-width: 400px; box-shadow: 0 4px 6px rgba(40, 167, 69, 0.3); transition: background-color 0.2s; display: inline-block;">
+        Mark as Complete & Return to Courses
+    </a>
+    <p style="margin-top: 15px; color: #777;">Next suggested course: **Mobile Security**.</p>
+</section>
+
+    </main>
+
+</body>
+</html>
