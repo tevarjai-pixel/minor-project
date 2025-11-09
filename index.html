@@ -566,6 +566,20 @@ function redirectToLearning() {
                 displayResult(analysis, resultArea);
             }, 2000);
         }
+        <!-- Recent URL Searches Section -->
+<div class="search-history-section">
+    <div class="search-history-header">
+        <h3>📋 Recent URL Searches</h3>
+        <button class="clear-history-btn" onclick="clearSearchHistory()">
+            🗑️ Clear History
+        </button>
+    </div>
+    <div class="search-history-list" id="searchHistory">
+        <div class="search-history-item">
+            <div class="search-url">No searches yet. Check a URL to see history here.</div>
+        </div>
+    </div>
+</div>
 
         // URL Analysis Logic
         function analyzeURL(url) {
@@ -822,4 +836,5 @@ function redirectToLearning() {
     </script>
 </body>
 </html>
+
 
