@@ -111,4 +111,78 @@ function displayAccuracyMeter(accuracy) {
         </div>
     `;
     document.getElementById('accuracy-display').innerHTML = meterHTML;
+
+}
+// Add this at the top with other global variables
+let urlSearchHistory = JSON.parse(localStorage.getItem('cyberAlertUrlHistory')) || [];
+
+// Add this in DOMContentLoaded event
+document.addEventListener('DOMContentLoaded', () => {
+    fetchAndAnalyzeAlerts();
+    updateSearchHistory(); // Add this line
+});
+
+// Save URL search to history
+function saveToSearchHistory(url, analysis) {
+    const searchEntry = {
+        url: url,
+        status: analysis.safe ? 'safe' : 'danger',
+        confidence: analysis.confidence,
+        timestamp: new Date().toLocaleString(),
+        result: analysis.safe ? 'Safe' : 'Suspicious'
+    };
+    
+    // Add to beginning of array
+    urlSearchHistory.unshift(searchEntry);
+    
+    // Keep only last 10 searches
+    if (urlSearchHistory.length > 10) {
+        urlSearchHistory = urlSearchHistory.slice(0, 10);
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('cyberAlertUrlHistory', JSON.stringify(urlSearchHistory));
+    
+    // Update display
+    updateSearchHistory();
+}
+
+// Update search history display
+function updateSearchHistory() {
+    const historyContainer = document.getElementById('searchHistory');
+    
+    if (urlSearchHistory.length === 0) {
+        historyContainer.innerHTML = `
+            <div class="search-history-item">
+                <div class="search-url">No searches yet. Check a URL to see history here.</div>
+            </div>
+        `;
+        return;
+    }
+    
+    historyContainer.innerHTML = '';
+    
+    urlSearchHistory.forEach(entry => {
+        const historyItem = document.createElement('div');
+        historyItem.className = 'search-history-item';
+        
+        historyItem.innerHTML = `
+            <div class="search-url" title="${entry.url}">${entry.url}</div>
+            <div class="search-status ${entry.status === 'safe' ? 'status-safe' : 'status-danger'}">
+                ${entry.result}
+            </div>
+            <div class="search-date">${entry.timestamp}</div>
+        `;
+        
+        historyContainer.appendChild(historyItem);
+    });
+}
+
+// Clear search history
+function clearSearchHistory() {
+    if (confirm('Are you sure you want to clear all search history?')) {
+        urlSearchHistory = [];
+        localStorage.setItem('cyberAlertUrlHistory', JSON.stringify(urlSearchHistory));
+        updateSearchHistory();
+    }
 }
