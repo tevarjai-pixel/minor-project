@@ -440,6 +440,82 @@ function redirectToLearning() {
     window.location.href = 'learning.html';
 }
 </script>
+                <!-- High Volume Analysis Section -->
+<div class="bulk-analysis-section">
+    <div class="section-header">
+        <h3>📊 ML-Powered Bulk URL Analysis (12,000 URLs)</h3>
+        <div class="header-controls">
+            <button class="analyze-btn" onclick="runBulkAnalysis()">
+                🚀 Run Bulk Analysis
+            </button>
+            <button class="report-btn" onclick="generateReport()">
+                📈 Generate Report
+            </button>
+        </div>
+    </div>
+
+    <div class="analysis-controls">
+        <div class="control-group">
+            <label>Dataset Size:</label>
+            <select id="datasetSize">
+                <option value="1000">1,000 URLs</option>
+                <option value="5000">5,000 URLs</option>
+                <option value="12000" selected>12,000 URLs</option>
+            </select>
+        </div>
+        
+        <div class="control-group">
+            <label>Batch Size:</label>
+            <select id="batchSize">
+                <option value="50">50 URLs/batch</option>
+                <option value="100" selected>100 URLs/batch</option>
+                <option value="200">200 URLs/batch</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Real-time Progress -->
+    <div class="progress-container">
+        <div class="progress-stats">
+            <div class="stat">
+                <span class="stat-value" id="processedCount">0</span>
+                <span class="stat-label">Processed</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value" id="maliciousCount">0</span>
+                <span class="stat-label">Malicious</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value" id="safeCount">0</span>
+                <span class="stat-label">Safe</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value" id="accuracy">0%</span>
+                <span class="stat-label">Accuracy</span>
+            </div>
+        </div>
+        
+        <div class="progress-bar-large">
+            <div class="progress-fill-large" id="bulkProgressFill"></div>
+        </div>
+        <div class="progress-text" id="bulkProgressText">Ready for analysis</div>
+    </div>
+
+    <!-- Results Display -->
+    <div class="results-container">
+        <div class="results-grid-large" id="resultsGridLarge">
+            <!-- Results will appear here -->
+        </div>
+        
+        <!-- Report Section -->
+        <div class="report-section" id="reportSection" style="display: none;">
+            <h4>📋 ML Analysis Report</h4>
+            <div class="report-metrics" id="reportMetrics"></div>
+            <div class="confusion-matrix" id="confusionMatrix"></div>
+            <div class="feature-importance" id="featureImportance"></div>
+        </div>
+    </div>
+</div>
 
                 <!-- Fraud Detection Section -->
                 <section class="fraud-detection-section">
@@ -837,6 +913,7 @@ function redirectToLearning() {
     </script>
 </body>
 </html>
+
 
 
 
